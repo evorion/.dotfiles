@@ -864,6 +864,8 @@ import json
 REQUIRE_REGEX = 'require\(["\'](.*)["\']\)'
 
 def findRelativeRequire(filename):
+  # TODO: Node permits you to require('./foo') where foo is a directory that contains index.js
+  # Fix this.
   # Solve this in the regex instead
   if filename.endswith('.js') == False:
     filename = filename + '.js'
