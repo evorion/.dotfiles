@@ -863,12 +863,16 @@ import json
 
 REQUIRE_REGEX = 'require\(["\'](.*)["\']\)'
 
-def findRelativeRequire(filename):
-  # TODO: Node permits you to require('./foo') where foo is a directory that contains index.js
+def findRelativeRequire(requirePath):
+  filename = None
+  if not requirePath.endswith('.js'):
+    filename = requirePath + '.js'
+
+  # Node permits you to require('./foo') where foo is a directory that contains index.js
   # Node will always prioritize a file named file.js rather than file/index.js
-  # Solve this in the regex instead
-  if filename.endswith('.js') == False:
-    filename = filename + '.js'
+  if not os.path.isfile(filename):
+    filename = requirePath + '/index.js'
+
   currDir = os.path.dirname(vim.current.buffer.name)
   relativePath = os.path.join(currDir, filename)
   realpath = os.path.realpath(relativePath)
