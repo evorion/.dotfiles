@@ -34,8 +34,8 @@ font pango:monospace 8
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# start a terminal
-bindsym $mod+Return exec $Terminal
+# Reset the last cwd so that the current directory is $HOME
+bindsym $mod+Return exec "echo ~ >> /tmp/last_cwd"; exec $Terminal
 bindsym $mod+Shift+Return exec $Browser
 
 # kill focused window
@@ -58,8 +58,12 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
 # split in vertical orientation
-bindsym $mod+c exec "i3-msg split v && $Terminal"
-bindsym $mod+x exec "i3-msg split h && $Terminal"
+bindsym $mod+c exec "bash ${HOME}/.dotfiles/scripts/tmux-last-cwd.sh"; split v; exec $Terminal
+bindsym $mod+x exec "bash ${HOME}/.dotfiles/scripts/tmux-last-cwd.sh"; split h; exec $Terminal
+
+# bindsym $mod+c exec "source ${HOME}/bash-wrapper.sh"; split v; exec $Terminal
+# bindsym $mod+x exec "${HOME}/set-i3-path.py $(pwd)"; split h; exec $Terminal
+# bindsym $mod+x exec "echo $(pwd) >> ~/lmfao"; split h; exec $Terminal
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle

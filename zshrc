@@ -20,6 +20,7 @@ if [[ "$(expr substr $(uname -s) 1 5)" == "Linux" ]]; then
     setxkbmap -option caps:swapescape
     start-tmux-if-exist
     keychain ${HOME}/.ssh/id_rsa -q
+    cd $(tail -n 1 /tmp/last_cwd)
 
 elif [[ "$(uname)" == "Darwin" ]]; then
     # Use GNU coreutils instead of bsd ones
