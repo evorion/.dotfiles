@@ -4,4 +4,5 @@ machine:
 
 test:
   override:
-    - make
+    - make unit
+    - make integration

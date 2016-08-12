@@ -40,6 +40,7 @@ gcheckoutcommit() {
   [[ -n $commit ]] && print -z git checkout $@ $commit
 }
 
+# TODO: Remove duplicate entries if branch exists locally
 gcheckoutbranch() {
   local branch_name=$(fbranch)
   if [[ $branch_name =~ ^origin ]]; then
