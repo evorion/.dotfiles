@@ -18,10 +18,12 @@ display_width=`xdotool getdisplaygeometry | cut -d" " -f1`
 window_id=`xdotool getactivewindow`
 
 # Remember if it was maximized.
-window_state=`xprop -id $window_id _NET_WM_STATE | awk '{ print $3 }'`
+window_state=`xprop -id $window_id _NET_WM_STATE | sed 's/.*= *//'`
 
 # Un-maximize current window so that we can move it
-wmctrl -ir $window_id -b remove,maximized_vert,maximized_horz
+wmctrl -ir $window_id -b remove,fullscreen
+wmctrl -ir $window_id -b remove,maximized_vert
+wmctrl -ir $window_id -b remove,,maximized_horz
 
 # Read window position
 x=`xwininfo -id $window_id | awk '/Absolute upper-left X:/ { print $4 }'`
@@ -52,6 +54,14 @@ fi
 xdotool windowmove $window_id $new_x $y
 
 # Maximize window again, if it was before
-if [ -n "${window_state}" ]; then
-  wmctrl -ir $window_id -b add,maximized_vert,maximized_horz
+if [ -z "${window_state##*_NET_WM_STATE_MAXIMIZED_HORZ*}" ] && [ -z "${window_state##*_NET_WM_STATE_MAXIMIZED_VERT*}" ]; then
+  wmctrl -ir $window_id -b add,maximized_horz,maximized_vert
+elif [ -z "${window_state##*_NET_WM_STATE_MAXIMIZED_HORZ*}" ]; then
+  wmctrl -ir $window_id -b add,maximized_horz
+elif [ -z "${window_state##*_NET_WM_STATE_MAXIMIZED_VERT*}" ]; then
+  wmctrl -ir $window_id -b add,maximized_vert
+fi
+
+if [ -z "${window_state##*_NET_WM_STATE_FULLSCREEN*}" ]; then
+  wmctrl -ir $window_id -b add,fullscreen
 fi
