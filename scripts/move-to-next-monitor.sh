@@ -17,7 +17,11 @@ set -x
 
 screen_width=`xdpyinfo | awk '/dimensions:/ { print $2; exit }' | cut -d"x" -f1`
 display_width=`xdotool getdisplaygeometry | cut -d" " -f1`
-window_id=`xdotool getactivewindow`
+if [ "$#" -eq 1 ]; then
+    window_id=$1;
+else
+    window_id=`xdotool getactivewindow`;
+fi
 
 # Remember if it was maximized.
 window_state=`xprop -id $window_id _NET_WM_STATE | sed 's/.*= *//'`
@@ -56,6 +60,7 @@ fi
 xdotool windowmove $window_id $new_x $y
 
 # Maximize window again, if it was before
+[ -z "$window_state" ] && exit
 if [ -z "${window_state##*_NET_WM_STATE_MAXIMIZED_HORZ*}" ] && [ -z "${window_state##*_NET_WM_STATE_MAXIMIZED_VERT*}" ]; then
   wmctrl -ir $window_id -b add,maximized_horz,maximized_vert
 elif [ -z "${window_state##*_NET_WM_STATE_MAXIMIZED_HORZ*}" ]; then
